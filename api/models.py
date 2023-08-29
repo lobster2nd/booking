@@ -12,24 +12,18 @@ class ApiUser(AbstractUser):
     cat = models.CharField(max_length=16, choices=CATEGORY_CHOICES)
 
 
-class Hotel(models.Model):
+class Storage(models.Model):
     name = models.CharField(max_length=128)
 
     def __str__(self):
         return f"{self.id}: {self.name}"
 
 
-class Room(models.Model):
-    num = models.PositiveIntegerField()
-    hotel = models.ForeignKey(Hotel, related_name="rooms", on_delete=models.CASCADE)
+class Product(models.Model):
+    storage = models.ForeignKey(Storage, related_name='items', on_delete=models.CASCADE)
+    user = models.ForeignKey(ApiUser, related_name='products', on_delete=models.CASCADE)
+    name = models.CharField(max_length=128)
+    amount = models.PositiveIntegerField()
 
     def __str__(self):
-        return f"{self.hotel.name}. Room num: {self.num}"
-
-
-class Booking(models.Model):
-    room = models.ForeignKey(Room, related_name='bookings', on_delete=models.CASCADE)
-    user = models.ForeignKey(ApiUser, related_name='bookings', on_delete=models.CASCADE)
-
-    def __str__(self):
-        return f"{self.user.username}; {self.room.hotel.name}; {self.room.num}"
+        return f"{self.user.username}; {self.storage.name}"

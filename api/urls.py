@@ -1,12 +1,11 @@
 from rest_framework.routers import DefaultRouter
 
-from api.views import UserModelViewSet, HotelModelViewSet, RoomModelViewSet, BookingModelViewSet
+from api.views import UserModelViewSet, StorageModelViewSet, ProductModelViewSet
 
 router = DefaultRouter()
 router.register('users', UserModelViewSet)
-router.register('hotels', HotelModelViewSet)
-router.register('rooms', RoomModelViewSet)
-router.register('bookings', BookingModelViewSet)
+router.register('storages', StorageModelViewSet)
+router.register('products', ProductModelViewSet)
 
 
 urlpatterns = [
