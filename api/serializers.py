@@ -38,24 +38,21 @@ class UserSerializer(serializers.Serializer):
 
 
 class StorageSerializer(serializers.ModelSerializer):
-    product_count = serializers.SerializerMethodField()
-
-    def get_product_count(self, storage):
-        total_count = 0
-        for product in storage.items.all():
-            total_count += product.amount
-        return total_count
+    items_amount = serializers.SerializerMethodField()
 
     class Meta:
         model = Storage
-        fields = ['id', 'name', 'product_count']
+        fields = ['id', 'name', 'items_amount']
         extra_kwargs = {"id": {"read_only": True}}
+
+    def get_items_amount(self, obj):
+        return obj.items.count()
 
 
 class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ['name', 'amount', 'storage', 'user']
+        fields = ['name', 'storage', 'user']
         read_only_fields = ['user']
         extra_kwargs = {"id": {"read_only": True}}

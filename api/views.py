@@ -26,6 +26,8 @@ class StorageModelViewSet(viewsets.ModelViewSet):
     queryset = Storage.objects.all()
     serializer_class = StorageSerializer
 
+    permission_classes = [IsAuthenticatedOrReadOnly, IsSupplierOrReadOnly]
+
 
 class ProductModelViewSet(viewsets.ModelViewSet):
     queryset = Product.objects.all()
@@ -35,15 +37,15 @@ class ProductModelViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         name = self.request.data.get('name')
-        amount = self.request.data.get('amount')
         storage_id = self.request.data.get('storage')
         storage = get_object_or_404(Storage, id=storage_id)
-        existing_product = Product.objects.filter(name=name, storage=storage).first()
+        serializer.save(user=self.request.user, storage=storage, name=name)
 
-        if existing_product:
-            existing_product.amount += int(amount)
-            existing_product.save()
-        else:
-            serializer.save(user=self.request.user, storage=storage, name=name, amount=amount)
-
+    @action(detail=True, methods=['get', 'post'])
+    def take_item(self, request, pk=None):
+        if request.user.cat != 'Пользователь':
+            return Response("Недостаточно прав. Только пользователь может забрать товар", status=403)
+        product = self.get_object()
+        product.delete()
+        return Response("Элемент успешно забран")
 

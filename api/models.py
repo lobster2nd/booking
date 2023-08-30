@@ -23,7 +23,6 @@ class Product(models.Model):
     storage = models.ForeignKey(Storage, related_name='items', on_delete=models.CASCADE)
     user = models.ForeignKey(ApiUser, related_name='products', on_delete=models.CASCADE)
     name = models.CharField(max_length=128)
-    amount = models.PositiveIntegerField()
 
     def __str__(self):
         return f"{self.user.username}; {self.storage.name}"
