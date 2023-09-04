@@ -3,6 +3,7 @@ from django.db import models
 
 
 class ApiUser(AbstractUser):
+    """User model"""
     USER = 'Пользователь'
     SUPPLIER = 'Поставщик'
     CATEGORY_CHOICES = [
@@ -13,6 +14,7 @@ class ApiUser(AbstractUser):
 
 
 class Storage(models.Model):
+    """Storage model"""
     name = models.CharField(max_length=128)
 
     def __str__(self):
@@ -20,6 +22,7 @@ class Storage(models.Model):
 
 
 class Product(models.Model):
+    """Product model"""
     storage = models.ForeignKey(Storage, related_name='items', on_delete=models.CASCADE)
     user = models.ForeignKey(ApiUser, related_name='products', on_delete=models.CASCADE)
     name = models.CharField(max_length=128)

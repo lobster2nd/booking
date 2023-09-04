@@ -36,6 +36,7 @@ class ProductModelViewSet(viewsets.ModelViewSet):
     permission_classes = [IsAuthenticatedOrReadOnly, IsSupplierOrReadOnly]
 
     def perform_create(self, serializer):
+        """Add product to storage. Only supplier can do it"""
         name = self.request.data.get('name')
         storage_id = self.request.data.get('storage')
         storage = get_object_or_404(Storage, id=storage_id)
@@ -43,6 +44,7 @@ class ProductModelViewSet(viewsets.ModelViewSet):
 
     @action(detail=True, methods=['get', 'post'])
     def take_item(self, request):
+        """Take product from storage. Only user can do it"""
         if request.user.cat != 'Пользователь':
             return Response("Недостаточно прав. Только пользователь может забрать товар",
                             status=403)
