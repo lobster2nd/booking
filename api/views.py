@@ -1,14 +1,14 @@
 from rest_framework import viewsets
 from rest_framework.authentication import TokenAuthentication, SessionAuthentication
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
-
-from .permissions import IsSupplierOrReadOnly
 from rest_framework.decorators import action
 from rest_framework.generics import get_object_or_404
 from rest_framework.response import Response
 
 from api.models import ApiUser, Storage, Product
 from api.serializers import UserSerializer, StorageSerializer, ProductSerializer
+
+from .permissions import IsSupplierOrReadOnly
 
 
 class UserModelViewSet(viewsets.ModelViewSet):
@@ -42,10 +42,10 @@ class ProductModelViewSet(viewsets.ModelViewSet):
         serializer.save(user=self.request.user, storage=storage, name=name)
 
     @action(detail=True, methods=['get', 'post'])
-    def take_item(self, request, pk=None):
+    def take_item(self, request):
         if request.user.cat != 'Пользователь':
-            return Response("Недостаточно прав. Только пользователь может забрать товар", status=403)
+            return Response("Недостаточно прав. Только пользователь может забрать товар",
+                            status=403)
         product = self.get_object()
         product.delete()
         return Response("Элемент успешно забран")
-
